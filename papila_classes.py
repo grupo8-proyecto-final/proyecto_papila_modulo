@@ -24,15 +24,6 @@ class CrystallineStatus(Enum):
     PSEUDOPHAKIC = 1
 
 
-class Point:
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
-
-    def __str__(self) -> str:
-        return f"({self.x}, {self.y})"
-
-
 class RefractiveError:
     def __init__(self, sphere: float, cylinder: Optional[float] = None, axis: Optional[float] = None):
         self.sphere = sphere
@@ -43,24 +34,6 @@ class RefractiveError:
         if self.cylinder is not None and self.axis is not None:
             return f"Sphere: {self.sphere}, Cylinder: {self.cylinder}, Axis: {self.axis}°"
         return f"Sphere: {self.sphere}"
-
-
-class Segmentation:
-    def __init__(self, contour_points: List[Point], expert_id: str, type_segmentation: str):
-        self.contour_points = contour_points
-        self.expert_id = expert_id
-        self.type_segmentation = type_segmentation
-
-    def calculate_area(self) -> float:
-        area = 0.0
-        n = len(self.contour_points)
-
-        for i in range(n):
-            j = (i + 1) % n
-            area += self.contour_points[i].x * self.contour_points[j].y
-            area -= self.contour_points[j].x * self.contour_points[i].y
-
-        return abs(area) / 2.0
 
 
 class EyeData:
@@ -87,35 +60,12 @@ class EyeData:
         self.mean_defect = mean_defect
 
         self.fundus_image: Optional[str] = None
-        self.disc_segmentations: List[Segmentation] = []
-        self.cup_segmentations: List[Segmentation] = []
 
     def add_fundus_image(self, image_path: str) -> None:
         if os.path.exists(image_path):
             self.fundus_image = image_path
         else:
             raise FileNotFoundError(f"La imagen {image_path} no existe")
-
-    def add_segmentation(self, segmentation: Segmentation) -> None:
-        if segmentation.type_segmentation.lower() == 'disc':
-            self.disc_segmentations.append(segmentation)
-        elif segmentation.type_segmentation.lower() == 'cup':
-            self.cup_segmentations.append(segmentation)
-        else:
-            raise ValueError("El tipo de segmentación debe ser 'disc' o 'cup'")
-
-    def calculate_cdr(self, expert_id: str = "exp1") -> Optional[float]:
-        disc_seg = next((s for s in self.disc_segmentations if s.expert_id == expert_id), None)
-        cup_seg = next((s for s in self.cup_segmentations if s.expert_id == expert_id), None)
-
-        if disc_seg and cup_seg:
-            disc_area = disc_seg.calculate_area()
-            cup_area = cup_seg.calculate_area()
-
-            if disc_area > 0:
-                return cup_area / disc_area
-
-        return None
 
     def get_glaucoma_severity(self) -> Optional[str]:
         if self.mean_defect is None or self.diagnosis != DiagnosisStatus.GLAUCOMA:
@@ -193,9 +143,6 @@ class PapilaDataset:
         return False
 
     def load_from_csv(self, od_file: str, os_file: str) -> None:
-        pass
-
-    def load_segmentations(self, directory: str) -> None:
         pass
 
     def load_images(self, directory: str) -> None:

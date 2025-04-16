@@ -24,7 +24,6 @@ Las principales clases son:
 - **PapilaDataset**: Clase principal que gestiona la colección de pacientes
 - **Patient**: Representa a un paciente con datos demográficos y referencias a ambos ojos
 - **EyeData**: Almacena los datos clínicos y las imágenes de un ojo específico
-- **Segmentation**: Representa las segmentaciones del disco óptico y la copa óptica
 - **Point**: Representa puntos 2D para las segmentaciones
 
 ## Mapeo Dataset PAPILA - Modelo de Clases
@@ -45,6 +44,65 @@ Las principales clases son:
 | Axial_Length        | `EyeData`         | `axial_length`       | Longitud axial del ojo en mm                      |
 | VF_MD               | `EyeData`         | `mean_defect`        | Índice de desviación media del campo visual (dB)  |
 
+
+## Descripción de RefractiveError
+
+La clase `RefractiveError` representa los defectos refractivos del ojo, capturando tres parámetros fundamentales para describir cómo se enfoca la luz en la retina:
+
+- `sphere`: Indica la potencia esférica de la corrección óptica
+  - Valores negativos indican miopía (dificultad para ver objetos lejanos)
+  - Valores positivos indican hipermetropía (dificultad para ver objetos cercanos)
+  - Valor cercano a 0 indica visión normal (emetropia)
+
+- `cylinder`: Describe el astigmatismo, que ocurre cuando la córnea tiene una curvatura irregular
+  - Representa la potencia del cilindro de corrección
+  - Valores distintos de 0 indican la presencia de astigmatismo
+
+- `axis`: El ángulo de orientación del astigmatismo
+  - Rango de 0 a 180 grados
+  - Indica la dirección de la curvatura irregular de la córnea
+
+### Criterios Clínicos de Evaluación del Error Refractivo
+
+```python
+def classify_refractive_error(sphere, cylinder):
+    """Clasifica el tipo de error refractivo"""
+    if sphere < 0:
+        return "Miopía"
+    elif sphere > 0:
+        return "Hipermetropía"
+    elif cylinder != 0:
+        return "Astigmatismo"
+    else:
+        return "Visión normal (Emetropia)"
+
+def get_refractive_error_severity(sphere, cylinder):
+    """Determina la severidad del defecto refractivo"""
+    abs_value = abs(sphere)
+    
+    if abs_value < 0.5:
+        return "Leve"
+    elif 0.5 <= abs_value < 2:
+        return "Moderado"
+    elif abs_value >= 2:
+        return "Severo"
+
+def analyze_astigmatism(cylinder, axis):
+    """Analiza características del astigmatismo"""
+    if cylinder != 0:
+        if 0 <= axis <= 180:
+            astigmatism_type = "Regular" if 80 <= axis <= 100 else "Irregular"
+            return f"{astigmatism_type} Astigmatism (Axis: {axis}°)"
+    return "No significant astigmatism"
+
+# Ejemplo de uso
+refractive_error = RefractiveError(sphere=-1.5, cylinder=-0.75, axis=90)
+print(f"Tipo: {classify_refractive_error(refractive_error.sphere, refractive_error.cylinder)}")
+print(f"Severidad: {get_refractive_error_severity(refractive_error.sphere, refractive_error.cylinder)}")
+print(f"Astigmatismo: {analyze_astigmatism(refractive_error.cylinder, refractive_error.axis)}")
+
+
+```
 ## Funcionalidades
 
 El sistema permite:
