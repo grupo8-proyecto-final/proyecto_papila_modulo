@@ -70,7 +70,8 @@ class EyeData:
             diagnosis: DiagnosisStatus,
             refractive_error: Optional[RefractiveError] = None,
             crystalline_status: Optional[CrystallineStatus] = None,
-            iop: Optional[float] = None,
+            pneumatic_iop: Optional[float] = None,
+            perkins_iop: Optional[float] = None,
             pachymetry: Optional[float] = None,
             axial_length: Optional[float] = None,
             mean_defect: Optional[float] = None
@@ -79,7 +80,8 @@ class EyeData:
         self.diagnosis = diagnosis
         self.refractive_error = refractive_error
         self.crystalline_status = crystalline_status
-        self.iop = iop
+        self.pneumatic_iop = pneumatic_iop
+        self.perkins_iop = perkins_iop
         self.pachymetry = pachymetry
         self.axial_length = axial_length
         self.mean_defect = mean_defect
@@ -275,7 +277,8 @@ if __name__ == "__main__":
         diagnosis=DiagnosisStatus.GLAUCOMA,
         refractive_error=RefractiveError(-1.5, -0.75, 180),
         crystalline_status=CrystallineStatus.PHAKIC,
-        iop=25.0,
+        pneumatic_iop=25.0,
+        perkins_iop=24.0,
         pachymetry=545.0,
         axial_length=24.5,
         mean_defect=-8.5
@@ -286,7 +289,8 @@ if __name__ == "__main__":
         diagnosis=DiagnosisStatus.SUSPECT,
         refractive_error=RefractiveError(-1.25),
         crystalline_status=CrystallineStatus.PHAKIC,
-        iop=22.0,
+        pneumatic_iop=22.0,
+        perkins_iop=21.0,
         pachymetry=540.0,
         axial_length=24.3,
         mean_defect=-2.5

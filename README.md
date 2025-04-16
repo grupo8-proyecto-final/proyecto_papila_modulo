@@ -27,6 +27,24 @@ Las principales clases son:
 - **Segmentation**: Representa las segmentaciones del disco óptico y la copa óptica
 - **Point**: Representa puntos 2D para las segmentaciones
 
+## Mapeo Dataset PAPILA - Modelo de Clases
+
+| Columna Dataset     | Clase             | Atributo             | Descripción                                       |
+|---------------------|-------------------|----------------------|---------------------------------------------------|
+| ID                  | `Patient`         | `patient_id`         | Identificador único del paciente                  |
+| Age                 | `Patient`         | `age`                | Edad del paciente en años                         |
+| Gender              | `Patient`         | `gender`             | Género: MALE(0) o FEMALE(1)                       |
+| Diagnosis           | `EyeData`         | `diagnosis`          | HEALTHY(0), GLAUCOMA(1), SUSPECT(2)               |
+| dioptre_1           | `RefractiveError` | `sphere`             | Potencia esférica en dioptrías                    |
+| dioptre_2           | `RefractiveError` | `cylinder`           | Potencia cilíndrica                               |
+| astigmatism         | `RefractiveError` | `axis`               | Eje del astigmatismo en grados                    |
+| Phakic/Pseudophakic | `EyeData`         | `crystalline_status` | PHAKIC(0), PSEUDOPHAKIC(1)                        |
+| Pneumatic           | `EyeData`         | `pneumatic_iop`      | Presión intraocular (método Neumático en mmHg)    |
+| Perkins             | `EyeData`         | `perkins_iop`        | Presión intraocular (método Perkins en mmHg)      |
+| Pachymetry          | `EyeData`         | `pachymetry`         | Espesor corneal en μm                             |
+| Axial_Length        | `EyeData`         | `axial_length`       | Longitud axial del ojo en mm                      |
+| VF_MD               | `EyeData`         | `mean_defect`        | Índice de desviación media del campo visual (dB)  |
+
 ## Funcionalidades
 
 El sistema permite:
@@ -82,7 +100,8 @@ patient = Patient(
 right_eye = EyeData(
     eye_type=Eye.RIGHT,
     diagnosis=DiagnosisStatus.GLAUCOMA,
-    iop=25.0,
+    pneumatic_iop=25.0,
+    perkins_iop=24.0,
     pachymetry=545.0,
     axial_length=24.5,
     mean_defect=-8.5
